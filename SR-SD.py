@@ -13,6 +13,9 @@ import random
 from time import sleep
 from transformers import GPT2LMHeadModel, GPT2Tokenizer
 import transformers
+import serial
+ser = serial.Serial("COM1")  # open first serial port
+
 transformers.logging.set_verbosity_error()
 db_path = "C:\\Users\\George\\.keras\\datasets\\DB" #change and create folder before running AI
 db2_path = "C:\\Users\\George\\.keras\\datasets\\MIND" #change and create folder before running AI
@@ -116,11 +119,13 @@ if option == "load":
         #if experiment then random actions for associative reasoning
         action = round(random.uniform(0, 10))
         print("doing action " + str(action) + " to experiment and learn.")
+        print("communicating to " + ser.portstr + " with action " + str(action))      # check which port is really used
+        ser.write(str(action).encode())
         image = pyautogui.screenshot()
         image = cv2.cvtColor(np.array(image),
                      cv2.COLOR_RGB2BGR)
-        cv2.imwrite(db2_path+"\\frame_" + str(i) + "_action_" + str(action) + ".png", image)
-        sunflower_path =db2_path + "\\frame_" + str(i) + "_action_" + str(action) + ".png"
+        cv2.imwrite(db2_path+"\\frame_" + str(i) + "_action_" + str(action) + "_.png", image)
+        sunflower_path =db2_path + "\\frame_" + str(i) + "_action_" + str(action) + "_.png"
         img = tf.keras.utils.load_img(
         sunflower_path, target_size=(img_height, img_width)
         )
@@ -142,6 +147,8 @@ if option == "load":
                     processB = file.split("_")[4]
                     print("doing action " + processB)
                     #do action via serial connection to robot
+                    print("communicating to " + ser.portstr + " with successful action " + processB)      # check which port is really used
+                    ser.write(processB.encode())
                     break
         sleep(1)
         if (i % 2) != 0:
