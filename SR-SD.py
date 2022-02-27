@@ -14,15 +14,13 @@ from time import sleep
 from transformers import GPT2LMHeadModel, GPT2Tokenizer
 import transformers
 import serial
-ser = serial.Serial("COM1")  # open first serial port
-
+ser = serial.Serial("COM1")
 transformers.logging.set_verbosity_error()
 db_path = "C:\\Users\\George\\.keras\\datasets\\DB" #change and create folder before running AI
 db2_path = "C:\\Users\\George\\.keras\\datasets\\MIND" #change and create folder before running AI
 print("AI-Synthetic dawn");
 option = input ("Do you want to: load or save the vision model. [load/save]?: ")
 user_inputB = input("download or exec pretrained mind[download/exec]?:")
-
 if user_inputB == "download":
     tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
     modelM = GPT2LMHeadModel.from_pretrained('gpt2')
@@ -119,7 +117,7 @@ if option == "load":
         #if experiment then random actions for associative reasoning
         action = round(random.uniform(0, 10))
         print("doing action " + str(action) + " to experiment and learn.")
-        print("communicating to " + ser.portstr + " with action " + str(action))      # check which port is really used
+        print("communicating to " + ser.portstr + " with action " + str(action))
         ser.write(str(action).encode())
         image = pyautogui.screenshot()
         image = cv2.cvtColor(np.array(image),
