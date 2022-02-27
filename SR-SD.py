@@ -112,6 +112,7 @@ if option == "load":
     prev = ""
     while(True):
         i += 1
+        #if do then random actions for associative reasoning
         image = pyautogui.screenshot()
         image = cv2.cvtColor(np.array(image),
                      cv2.COLOR_RGB2BGR)
@@ -128,6 +129,7 @@ if option == "load":
         "This image most likely belongs to {} with a {:.2f} percent confidence."
         .format(class_names[np.argmax(score)], 100 * np.max(score))
         )
+        #save association
         sleep(1)
         if (i % 2) != 0:
             if user_inputB == "exec":
@@ -143,4 +145,5 @@ if option == "load":
             if user_inputB == "exec":
                 if string.find(class_names[np.argmax(score)]) > len(prev):
                         print("Success")
+                        #if futher research of process, use stored actions from associative reasoning
                         break
