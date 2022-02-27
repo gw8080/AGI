@@ -135,7 +135,7 @@ if option == "load":
                 tokenizer = GPT2Tokenizer.from_pretrained('./cached_t-GPT2')
                 inputs = tokenizer.encode(class_names[np.argmax(score)], return_tensors='pt')
                 outputs = modelM.generate(
-                inputs, max_length=42, do_sample=True, temperature=5.0
+                inputs, max_length=128, do_sample=True, temperature=5.0
                 )
                 string = tokenizer.decode(outputs[0], skip_special_tokens=True)
                 prev = class_names[np.argmax(score)]
