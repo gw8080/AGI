@@ -15,13 +15,13 @@ from transformers import GPT2LMHeadModel, GPT2Tokenizer
 import transformers
 transformers.logging.set_verbosity_error()
 print("AI-Synthetic dawn");
-option = input ("Do you want to: load or save the model. [load/save]? : ")
+option = input ("Do you want to: load or save the vision model. [load/save]? : ")
 user_inputB = input("download or exec pretrained mind[download/exec]?:")
 
 if user_inputB == "download":
     tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
-    model = GPT2LMHeadModel.from_pretrained('gpt2')
-    model.save_pretrained("./cached-GPT2")
+    modelM = GPT2LMHeadModel.from_pretrained('gpt2')
+    modelM.save_pretrained("./cached-GPT2")
     tokenizer.save_pretrained("./cached_t-GPT2")
 data_dir = pathlib.Path("C:\\Users\\George\\.keras\\datasets\\DB")
 image_count = len(list(data_dir.glob('*/*.jpg')))
@@ -109,6 +109,7 @@ if option == "load":
     i = 0
     file_object = open('temp.txt', 'w')
     string = ""
+    prev = ""
     while(True):
         i += 1
         image = pyautogui.screenshot()
@@ -127,15 +128,19 @@ if option == "load":
         "This image most likely belongs to {} with a {:.2f} percent confidence."
         .format(class_names[np.argmax(score)], 100 * np.max(score))
         )
-        time.sleep(1)
+        sleep(1)
         if (i % 2) != 0:
             if user_inputB == "exec":
-                model = GPT2LMHeadModel.from_pretrained('./cached-GPT2')
+                modelM = GPT2LMHeadModel.from_pretrained('./cached-GPT2')
                 tokenizer = GPT2Tokenizer.from_pretrained('./cached_t-GPT2')
                 inputs = tokenizer.encode(class_names[np.argmax(score)], return_tensors='pt')
+                outputs = modelM.generate(
+                inputs, max_length=42, do_sample=True, temperature=5.0
+                )
                 string = tokenizer.decode(outputs[0], skip_special_tokens=True)
+                prev = class_names[np.argmax(score)]
         if (i % 2) == 0:
             if user_inputB == "exec":
-                if string.find(class_names[np.argmax(score)]) != -1:
+                if string.find(class_names[np.argmax(score)]) > len(prev):
                         print("Success")
                         break
