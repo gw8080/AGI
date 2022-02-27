@@ -132,7 +132,7 @@ if option == "load":
             if user_inputB == "exec":
                 model = GPT2LMHeadModel.from_pretrained('./cached-GPT2')
                 tokenizer = GPT2Tokenizer.from_pretrained('./cached_t-GPT2')
-                inputs = tokenizer.encode(user_input, return_tensors='pt')
+                inputs = tokenizer.encode(class_names[np.argmax(score)], return_tensors='pt')
                 string = tokenizer.decode(outputs[0], skip_special_tokens=True)
         if (i % 2) == 0:
             if user_inputB == "exec":
