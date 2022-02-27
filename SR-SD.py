@@ -14,7 +14,7 @@ from time import sleep
 from transformers import GPT2LMHeadModel, GPT2Tokenizer
 import transformers
 transformers.logging.set_verbosity_error()
-print("AI-GPT2");
+print("AI-Synthetic dawn");
 option = input ("Do you want to: load or save the model. [load/save]? : ")
 user_inputB = input("download or exec pretrained mind[download/exec]?:")
 
