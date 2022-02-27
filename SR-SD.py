@@ -82,9 +82,9 @@ epochs=epochs
     val_acc = history.history['val_accuracy']
     loss = history.history['loss']
     val_loss = history.history['val_loss']
-    model.save("my_model")
+    model.save("vision_model")
 if option == "load":
-    model = keras.models.load_model("my_model")
+    model = keras.models.load_model("vision_model")
     cap = cv2.VideoCapture(0)
 #webcam stuff
 #   while(cap.isOpened()):
