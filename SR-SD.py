@@ -106,7 +106,6 @@ if option == "load":
 #        i += 1
 #cap.release()
 #cv2.destroyAllWindows()
-
 # take screenshot using pyautogui
     i = 0
     file_object = open('temp.txt', 'w')
