@@ -14,8 +14,10 @@ from time import sleep
 from transformers import GPT2LMHeadModel, GPT2Tokenizer
 import transformers
 transformers.logging.set_verbosity_error()
+db_path = "C:\\Users\\George\\.keras\\datasets\\DB" #change and create folder before running AI
+db2_path = "C:\\Users\\George\\.keras\\datasets\\MIND" #change and create folder before running AI
 print("AI-Synthetic dawn");
-option = input ("Do you want to: load or save the vision model. [load/save]? : ")
+option = input ("Do you want to: load or save the vision model. [load/save]?: ")
 user_inputB = input("download or exec pretrained mind[download/exec]?:")
 
 if user_inputB == "download":
@@ -23,7 +25,7 @@ if user_inputB == "download":
     modelM = GPT2LMHeadModel.from_pretrained('gpt2')
     modelM.save_pretrained("./cached-GPT2")
     tokenizer.save_pretrained("./cached_t-GPT2")
-data_dir = pathlib.Path("C:\\Users\\George\\.keras\\datasets\\DB")
+data_dir = pathlib.Path(db_path)
 image_count = len(list(data_dir.glob('*/*.jpg')))
 print(image_count)
 batch_size = 32
@@ -118,13 +120,13 @@ if option == "load":
         image = pyautogui.screenshot()
         image = cv2.cvtColor(np.array(image),
                      cv2.COLOR_RGB2BGR)
-        cv2.imwrite("frame_" + str(i) + "_action_" + str(action) + ".png", image)
-        sunflower_path = "frame_" + str(i) + "_action_" + str(action) + ".png"
+        cv2.imwrite(db2_path+"\\frame_" + str(i) + "_action_" + str(action) + ".png", image)
+        sunflower_path =db2_path + "\\frame_" + str(i) + "_action_" + str(action) + ".png"
         img = tf.keras.utils.load_img(
         sunflower_path, target_size=(img_height, img_width)
         )
         img_array = tf.keras.utils.img_to_array(img)
-        img_array = tf.expand_dims(img_array, 0) # Create a batch
+        img_array = tf.expand_dims(img_array, 0)
         predictions = model.predict(img_array)
         score = tf.nn.softmax(predictions[0])
         print(
@@ -132,6 +134,16 @@ if option == "load":
         .format(class_names[np.argmax(score)], 100 * np.max(score))
         )
         # search directory structure for stored action frame from action-vision association then do.
+        for file in os.listdir(db2_path):
+            if file.endswith(".png"):
+                print(os.path.join("/", file))
+                if file.find(class_names[np.argmax(score)]) == -1:
+                    print("capable of " + file + ", no motive")
+                if file.find(class_names[np.argmax(score)]) != -1 and file.find("_framesuccess_") != -1:
+                    processB = file.split("_")[4]
+                    print("doing action " + processB)
+                    #do action via serial connection to robot
+                    break
         sleep(1)
         if (i % 2) != 0:
             if user_inputB == "exec":
@@ -146,15 +158,15 @@ if option == "load":
         if (i % 2) == 0:
             if user_inputB == "exec":
                 if string.find(class_names[np.argmax(score)]) < len(prev): # '<' test mode, '>' real mode
-                        print("Success in thinking, stored action frame")
-                        cv2.imwrite(class_names[np.argmax(score)] + "_frame_success_" + str(i) + "_action_" + str(action) + ".png", image)
+                        print("Success in thinking pathway, stored frame")
+                        cv2.imwrite(db2_path + "\\" + class_names[np.argmax(score)] + "_framesuccess_" + str(i) + "_action_" + str(action) + "_.png", image)
                         # action-vision association
                         process = string.split(" ")
                         for word in process:
                             print("downloading " + word + " images for training purposes.")
                             #download images to storage...
                         print("self improving...")
-                        data_dir = pathlib.Path("C:\\Users\\George\\.keras\\datasets\\DB")
+                        data_dir = pathlib.Path(db_path)
                         image_count = len(list(data_dir.glob('*/*.jpg')))
                         print(image_count)
                         batch_size = 32
