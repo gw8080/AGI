@@ -145,6 +145,7 @@ if option == "load":
         print("doing random action " + str(action) + " to experiment and learn.")
         print("communicating to " + ser.portstr + " with action " + str(action))
         ser.write(str(action).encode())
+        print("what am i doing?")
         print("accepting voice input to understand self agency.")
         new_agency = "pointing" # test code for voice input
         file = open('agency.txt', 'a')
