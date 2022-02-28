@@ -137,8 +137,8 @@ if option == "load":
             new_object = "ball" # test code for voice input
             dirname = str(new_object)
             if os.path.isdir(db_path + "\\" + new_object) == False:
-                os.mkdir(db2_path + "\\" + new_object)
-            cv2.imwrite(db2_path + "\\" + new_object + "\\frame_" + str(i) + ".png", image)
+                os.mkdir(db_path + "\\" + new_object)
+            cv2.imwrite(db_path + "\\" + new_object + "\\frame_" + str(i) + ".png", image)
             #associative reasoning of new object label
         #if experiment then random actions for associative reasoning
         action = round(random.uniform(0, 10))
