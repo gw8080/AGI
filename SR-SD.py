@@ -109,21 +109,16 @@ if option == "load":
 #cv2.destroyAllWindows()
 # take screenshot using pyautogui
     i = 0
-    file_object = open('temp.txt', 'w')
     string = ""
     prev = ""
     while(True):
+        sleep(1)
         i += 1
-        #if experiment then random actions for associative reasoning
-        action = round(random.uniform(0, 10))
-        print("doing action " + str(action) + " to experiment and learn.")
-        print("communicating to " + ser.portstr + " with action " + str(action))
-        ser.write(str(action).encode())
         image = pyautogui.screenshot()
         image = cv2.cvtColor(np.array(image),
                      cv2.COLOR_RGB2BGR)
-        cv2.imwrite(db2_path+"\\frame_" + str(i) + "_action_" + str(action) + "_.png", image)
-        sunflower_path =db2_path + "\\frame_" + str(i) + "_action_" + str(action) + "_.png"
+        cv2.imwrite(db2_path+"\\frame.png", image)
+        sunflower_path =db2_path + "\\frame.png"
         img = tf.keras.utils.load_img(
         sunflower_path, target_size=(img_height, img_width)
         )
@@ -135,20 +130,44 @@ if option == "load":
         "This image most likely belongs to {} with a {:.2f} percent confidence."
         .format(class_names[np.argmax(score)], 100 * np.max(score))
         )
-        # search directory structure for stored action frame from action-vision association then do.
+        #if new object say "what is that?"
+        if 100 * np.max(score) < 50:
+            print("what is that?")
+            print("accepting voice input.")
+            new_object = "ball" # test code for voice input
+            dirname = str(new_object)
+            if os.path.isdir(db_path + "\\" + new_object) == False:
+                os.mkdir(db2_path + "\\" + new_object)
+            cv2.imwrite(db2_path + "\\" + new_object + "\\frame_" + str(i) + ".png", image)
+            #associative reasoning of new object label
+        #if experiment then random actions for associative reasoning
+        action = round(random.uniform(0, 10))
+        print("doing random action " + str(action) + " to experiment and learn.")
+        print("communicating to " + ser.portstr + " with action " + str(action))
+        ser.write(str(action).encode())
+        print("accepting voice input to understand self agency.")
+        new_agency = "pointing" # test code for voice input
+        file = open('agency.txt', 'a')
+        file.write(new_agency + "=" + str(action) + "\n")
+        file.close()
+        # search directory structure for stored successful action frame from action-vision association then do.
         for file in os.listdir(db2_path):
             if file.endswith(".png"):
-                print(os.path.join("/", file))
-                if file.find(class_names[np.argmax(score)]) == -1:
-                    print("capable of " + file + ", no motive")
+                #print(os.path.join("/", file))
+                #if file.find(class_names[np.argmax(score)]) == -1:
+                    #print("capable of " + file + ", no motive")
                 if file.find(class_names[np.argmax(score)]) != -1 and file.find("_framesuccess_") != -1:
                     processB = file.split("_")[4]
-                    print("doing action " + processB)
+                    print("doing purposeful action " + processB)
                     #do action via serial connection to robot
-                    print("communicating to " + ser.portstr + " with successful action " + processB)      # check which port is really used
+                    print("communicating to " + ser.portstr + " with successful action " + processB)
                     ser.write(processB.encode())
+                    with open('agency.txt') as f:
+                        for line in f:
+                            if line.find(file.split("_")[4]) != -1:
+                                print("i am " + line.split("=")[0] + " at " + file.split("_")[0])
+                                break
                     break
-        sleep(1)
         if (i % 2) != 0:
             if user_inputB == "exec":
                 modelM = GPT2LMHeadModel.from_pretrained('./cached-GPT2')
@@ -161,18 +180,18 @@ if option == "load":
                 prev = class_names[np.argmax(score)]
         if (i % 2) == 0:
             if user_inputB == "exec":
-                if string.find(class_names[np.argmax(score)]) < len(prev): # '<' test mode, '>' real mode
-                        print("Success in thinking pathway, stored frame")
+                if string.find(class_names[np.argmax(score)]) > len(prev): # '<' test mode, '>' real mode
+                        print("Success in thinking pathway, stored mental frames")
                         cv2.imwrite(db2_path + "\\" + class_names[np.argmax(score)] + "_framesuccess_" + str(i) + "_action_" + str(action) + "_.png", image)
                         # action-vision association
                         process = string.split(" ")
-                        for word in process:
-                            print("downloading " + word + " images for training purposes.")
+                        #for word in process:
+                            #print("downloading " + word + " images for training purposes.")
                             #download images to storage...
                         print("self improving...")
                         data_dir = pathlib.Path(db_path)
                         image_count = len(list(data_dir.glob('*/*.jpg')))
-                        print(image_count)
+                        #print(image_count)
                         batch_size = 32
                         img_height = 180
                         img_width = 180
